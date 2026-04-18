@@ -1,0 +1,512 @@
+body {
+    background: #1b1b1b;
+    font-family: 'Poppins', sans-serif;
+    color: white;
+}
+
+h1 {
+    display: flex;
+    justify-content: center;
+    padding-top: 2rem;
+    font-weight: bold;
+}
+
+.container-comandas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding: 20px;
+    justify-content: center;
+}
+
+.card-comanda {
+    flex: 0 0 175px;
+
+    max-width: 400px;
+    height: 140px;
+
+    background: #2a2a2a;
+    border-radius: 20px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+
+    text-decoration: none;
+    color: white;
+
+    transition: 0.3s;
+}
+
+.card-comanda:hover {
+    transform: scale(1.05);
+    background: #333;
+}
+
+.add-comanda {
+    background: #1e8549;
+    font-size: 3rem;
+    cursor: pointer;
+}
+
+.add-comanda:hover {
+    background: #166a38;
+}
+
+.nome-comanda {
+    margin-top: 10px;
+}
+
+.titulo {
+    text-align: center;
+    margin: 20px 0;
+    font-weight: bold;
+}
+
+.painel-box {
+    background: #222;
+    margin: 20px;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
+
+    border: 1px solid #333;
+    backdrop-filter: blur(5px);
+}
+
+.painel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.painel-header h2 {
+    margin: 0;
+    font-size: 1.2rem;
+}
+
+.btn-toggle {
+    background: #333;
+    border: none;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn-toggle:hover {
+    background: #555;
+}
+
+.container-produtos {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.card-produto {
+    flex: 0 0 175px;
+
+    height: 140px;
+
+    padding: 15px;
+    background: #2a2a2a;
+    border-radius: 20px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    justify-content: space-between;
+
+    cursor: pointer;
+    transition: 0.3s;
+    text-decoration: none;
+    color: white;
+}
+
+.card-produto:hover {
+    transform: scale(1.05);
+    background: #333;
+}
+
+.nome-produto {
+    font-weight: 600;
+    text-align: center;
+}
+
+.preco-produto {
+    color: #1e8549;
+    font-weight: bold;
+    margin-top: 5px;
+}
+
+.busca-wrapper {
+    position: relative;
+    flex-grow: 1;
+    margin: 0 30px;
+    max-width: 400px;
+}
+
+.busca-icon {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #888;
+    pointer-events: none;
+}
+
+.busca-input {
+    width: 140%;
+    background: #1b1b1b;
+    border: 1px solid #444;
+    border-radius: 50px;
+    padding: 10px 20px 10px 50px;
+    color: white;
+    outline: none;
+    transition: 0.3s;
+    font-size: 0.9rem;
+}
+
+.busca-input:focus {
+    border-color: #1e8549;
+    background: #252525;
+}
+
+.busca-input:focus+.busca-icon {
+    color: #1e8549;
+}
+
+.categorias-container-atendente {
+    display: flex;
+    gap: 10px;
+    padding: 10px 0;
+    margin-bottom: 15px;
+    overflow-x: auto;
+}
+
+.btn-categoria {
+    background: #2a2a2a;
+    border: 1px solid #444;
+    color: #888;
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    transition: 0.3s;
+    white-space: nowrap;
+}
+
+.btn-categoria:hover {
+    background: #333;
+    color: white;
+}
+
+.btn-categoria.active {
+    background: #1e8549;
+    color: white;
+    border-color: #1e8549;
+}
+
+.comanda-atendente {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: fit-content;
+    margin: 2rem auto;
+    max-width: 1200px;
+    width: 90%;
+}
+
+.nome-cliente {
+    margin-bottom: 0.5rem;
+    margin: auto;
+    margin-left: 5px;
+}
+
+.caixa-cliente {
+    display: flex;
+    background-color: #222;
+    color: white;
+    min-width: 300px;
+    width: 100%;
+    padding: 15px 20px;
+    font-size: 1.8rem;
+    border-radius: 1.5rem;
+    box-sizing: border-box;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.alinhar-btn {
+    display: flex;
+    justify-content: flex-end;
+    padding: 1rem;
+    width: 100%;
+}
+
+.btn-finalizar {
+    background-color: #1e8549;
+    color: white;
+    text-decoration: none;
+    letter-spacing: 0.1rem;
+    border-radius: 1rem;
+    border: none;
+    font-weight: bold;
+    padding: 0.5rem 2.2rem;
+    font-size: 1.2rem;
+    cursor: pointer;
+}
+
+.alinhar-id {
+    display: flex;
+}
+
+.carrinho-selecionados {
+    margin-top: 20px;
+    border-color: #1e8549;
+}
+
+.observacao {
+    margin-top: 20px;
+    border-color: #eeb12d !important;
+}
+
+.comandas {
+    margin-top: 20px;
+    border-color: #1e8549 !important;
+}
+
+.msg-vazio {
+    margin: 0;
+    margin-right: 5rem;
+    margin-left: 5rem;
+}
+
+.total-comanda {
+    margin-left: auto;
+    padding-right: 20px;
+}
+
+.btn-adicionar {
+    background: #333;
+    border: none;
+    color: white;
+    padding: 0.3rem 1.1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn-adicionar:hover {
+    background: #555;
+}
+
+.lapis-icon {
+    position: absolute;
+    left: 0.95rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #888;
+    pointer-events: none;
+}
+
+.observacao-wrapper {
+    position: relative;
+    flex: 1;
+    max-width: 500px;
+    margin: 0 20px;
+}
+
+.observacao-input {
+    width: 100%;
+    background: #1b1b1b;
+    border: 1px solid #444;
+    border-radius: 50px;
+    padding: 10px 20px 10px 50px;
+    color: white;
+    outline: none;
+    transition: 0.3s;
+    font-size: 0.9rem;
+}
+
+.observacao-input:focus {
+    border-color: #eeb12d;
+    background: #252525;
+}
+
+.observacao-input:focus+.observacao-icon {
+    color: #eeb12d;
+}
+
+.painel-header-atendente {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 10px 20px;
+}
+
+.painel-header h2 {
+    margin: 0;
+    font-size: 1.2rem;
+}
+
+.busca-wrapper-atendente {
+    position: relative;
+    flex-grow: 1;
+    margin: 0 30px;
+    max-width: 400px;
+}
+
+.busca-icon-atendente {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #888;
+    pointer-events: none;
+}
+
+.busca-input-atendente {
+    width: 150%;
+    background: #1b1b1b;
+    border: 1px solid #444;
+    border-radius: 50px;
+    padding: 10px 20px 10px 50px;
+    color: white;
+    outline: none;
+    transition: 0.3s;
+    font-size: 0.9rem;
+}
+
+.busca-input-atendente:focus {
+    border-color: #1e8549;
+    background: #252525;
+}
+
+.busca-input-atendente:focus+.busca-icon {
+    color: #1e8549;
+}
+
+.categorias-container {
+    display: inline-flex;
+    gap: 10px;
+    padding: 10px 0;
+    margin-bottom: 15px;
+    overflow-x: auto;
+}
+
+.alinhar-painel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.2rem;
+    width: 100%;
+}
+
+.painel-box-atendente {
+    display: flex;
+    justify-content: space-around;
+    background: #222;
+    margin: 20px;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
+    min-width: 63%;
+    border: 1px solid #333;
+    backdrop-filter: blur(5px);
+    max-width: 1200px;
+}
+
+.painel-header-atendente {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 10px 20px;
+}
+
+.painel-header-atendente h2 {
+    margin: 0;
+    font-size: 1.2rem;
+}
+
+.atendente {
+    border-color: #1e8549;
+}
+
+.carrinho-selecionados {
+    border-color: purple;
+}
+
+@media (max-width: 768px) {
+    .painel-header-atendente {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 15px;
+        padding: 15px;
+    }
+
+    .painel-box-atendente {
+        min-width: 95%;
+        margin: 10px auto;
+        padding: 10px;
+    }
+
+    .observacao-wrapper {
+        max-width: 100%;
+        margin: 0;
+    }
+
+    .msg-vazio {
+        margin: 5px 0;
+        text-align: center;
+        font-size: 0.85rem;
+    }
+
+    .total-comanda {
+        margin-left: 0;
+        text-align: center;
+        padding: 10px 0;
+        border-top: 1px solid #333;
+    }
+
+    .alinhar-btn {
+        justify-content: center;
+    }
+
+    .btn-finalizar {
+        margin-top: 2rem;
+    }
+
+    .busca-wrapper {
+        width: 100%;
+        max-width: 280px;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+    }
+
+    .busca-input {
+        width: 100%;
+        font-size: 14px;
+    }
+
+    .categorias-container {
+        display: flex;
+        justify-content: flex-start;
+        width: 100%;
+        padding-left: 15px;
+        margin-top: 10px;
+    }
+
+    .btn-categoria {
+        margin-left: 0 !important;
+    }
+}
