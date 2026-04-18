@@ -18,6 +18,33 @@ if (isset($_REQUEST['Criar'])) {
         echo $e;
     }
 }
+
+if (isset($_POST['EditarItem'])) {
+
+    $produtoId = $_POST['item_id'];
+    $novaQtd = $_POST['nova_qtd'];
+    $idComanda = $_GET['id'];
+
+    RemoverProdutoDaComanda($idComanda, $produtoId, $conn);
+
+    AdicionarProduto($idComanda, $produtoId, $novaQtd, $conn);
+
+    echo "<script>location.href='index.php?id=$idComanda'</script>";
+}
+
+if (isset($_POST['ExcluirItem'])) {
+
+    $produtoId = $_POST['item_id'];
+    $idComanda = $_GET['id'];
+
+    RemoverProdutoDaComanda($idComanda, $produtoId, $conn);
+
+    echo "<script>location.href='index.php?id=$idComanda'</script>";
+}
+
+$sqlCategorias = "SELECT DISTINCT categoria FROM produtos WHERE categoria IS NOT NULL AND categoria != '' ORDER BY categoria ASC";
+$resultCategorias = $conn->query($sqlCategorias);
+
 ?>
 
 
@@ -26,6 +53,12 @@ if (isset($_REQUEST['Criar'])) {
 </head>
 
 <body>
+
+    <div class="top-bar">
+        <a href="Index.php" class="btn-voltar">
+            <i class="fas fa-arrow-left"></i> Voltar
+        </a>
+    </div>
 
     <div class="comanda-atendente">
         <label class="nome-cliente">Nome:</label>
@@ -45,11 +78,11 @@ if (isset($_REQUEST['Criar'])) {
 
                 <div class="categorias-container-atendente">
                     <button class="btn-categoria active" onclick="filtrarPorCategoria('todos', this)">Tudo</button>
-                    <?php /* while ($cat = $resultCategorias->fetch()): ?>
-<button class="btn-categoria" onclick="filtrarPorCategoria('<?= $cat['categoria'] ?>', this)">
-<?= ucfirst($cat['categoria']) ?>
-</button>
-<?php endwhile; */ ?>
+                    <?php while ($cat = $resultCategorias->fetch()): ?>
+                        <button class="btn-categoria" onclick="filtrarPorCategoria('<?= $cat['categoria'] ?>', this)">
+                            <?= ucfirst($cat['categoria']) ?>
+                        </button>
+                    <?php endwhile; ?>
                 </div>
 
                 <button class="btn-toggle" data-bs-toggle="collapse" data-bs-target="#painelProdutos">
@@ -61,13 +94,7 @@ if (isset($_REQUEST['Criar'])) {
                 <div class="container-produtos">
                     <?php
                     try {
-                        $filtro = "Tudo";
-                        if ($filtro != "Tudo" || !isset($filtro)) {
-                            $filtro = "and categoria = " . "'$filtro'";
-                        } else {
-                            $filtro = "";
-                        }
-                        $sql = "SELECT * from produtos where ativo =   1 $filtro";
+                        $sql = "SELECT * FROM produtos WHERE ativo = 1";
                         $RequestUser = $conn->prepare($sql);
                         $RequestUser->execute();
                     } catch (PDOException $e) {
@@ -112,47 +139,52 @@ if (isset($_REQUEST['Criar'])) {
                 $Pedidos = RequestComandaProdutos($_GET['id'], $conn);
                 $Pedidos = explode(" ", $Pedidos);
                 sort($Pedidos);
+
                 $TotalPedidos = count($Pedidos);
                 $TotalPreco = 0;
                 $EchoList = [];
 
-                for ($i = 1; $i != $TotalPedidos; $i++) {
+                for ($i = 1; $i < $TotalPedidos; $i++) {
 
                     $SingleProduto = (int) $Pedidos[$i];
 
-                    $sql = "SELECT * FROM produtos where id = $SingleProduto";
+                    $sql = "SELECT * FROM produtos WHERE id = :id";
                     $SelectProdutos = $conn->prepare($sql);
+                    $SelectProdutos->bindValue(":id", $SingleProduto);
                     $SelectProdutos->execute();
 
                     $row = $SelectProdutos->fetch(PDO::FETCH_ASSOC);
 
                     $nome = $row['nome'];
-                    $preco = $row['preco'];
+                    $precoUnit = $row['preco'];
                     $total = count(array_keys($Pedidos, $SingleProduto));
 
-                    $preco = $preco * $total;
+                    $precoTotal = $precoUnit * $total;
 
-                    if (!in_array($SingleProduto, $EchoList)) {
-                        echo "<div class='card-produto' data-id='' data-nome='' data-preco=''
-                    data-categoria='' data-bs-toggle='Modal'
-                    data-bs-target='#modalAdicionarProduto'>
-                    
-                    <div class='nome-produto'>
-                    $nome
-                    </div>
-                    Total: $total
-                    <div class='preco-produto'>
-                    R$ $preco
-                    </div>
-                    
-                    </div>";
-                        $TotalPreco += $preco;
-                        array_push($EchoList, $SingleProduto);
-                    }
+                    if (!in_array($SingleProduto, $EchoList)):
+                        ?>
+
+                        <div class="card-produto item-comanda" data-id="<?= $SingleProduto ?>" data-nome="<?= $nome ?>"
+                            data-quantidade="<?= $total ?>" data-bs-toggle="modal" data-bs-target="#modalEditarItem">
+
+                            <div class="nome-produto">
+                                <?= $nome ?>
+                            </div>
+
+                            Total: <?= $total ?>
+
+                            <div class="preco-produto">
+                                R$ <?= number_format($precoTotal, 2, ',', '.') ?>
+                            </div>
+
+                        </div>
+
+                        <?php
+                        $TotalPreco += $precoTotal;
+                        $EchoList[] = $SingleProduto;
+                    endif;
                 }
                 ?>
-
-
             </div>
             <div class="total-comanda">
                 <span>Total:</span>
@@ -164,26 +196,44 @@ if (isset($_REQUEST['Criar'])) {
             </div>
         </div>
 
-        <div class="painel-box-atendente observacao">
-            <form method="POST" class="painel-header-atendente">
-                <h2>Observações</h2>
+        <div class="painel-box-atendente d-flex flex-column">
 
-                <div class="observacao-wrapper">
-                    <i class="fa-solid fa-pen lapis-icon"></i>
-                    <input type="text" name="Observacao" id="inputObservacao" class="observacao-input"
-                        placeholder="Adicione uma observação." onkeyup="filtrarProdutos()">
-                </div>
+            <div class="painel-header-atendente">
+                <form method="POST" class="painel-header-atendente">
+                    <h2>Observações</h2>
 
-                <div id="listaObservacoes" class="container-produtos">
-                </div>
+                    <div class="observacao-group">
+                        <div class="observacao-wrapper">
+                            <i class="fa-solid fa-pen lapis-icon"></i>
+                            <input type="text" name="Observacao" class="observacao-input"
+                                placeholder="Adicione uma observação.">
+                        </div>
 
-                <button type="submit" name="AdicionarObservacao" class="btn-adicionar">+</button>
-            </form>
+                        <button type="submit" name="AdicionarObservacao" class="btn-adicionar">+</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="container-produtos">
+
+                <?php
+                $sql = "SELECT * FROM observacoes WHERE idComanda = :id ORDER BY id DESC";
+                $observacao = $conn->prepare($sql);
+                $observacao->bindValue(":id", $_GET['id']);
+                $observacao->execute();
+
+                while ($obs = $observacao->fetch(PDO::FETCH_ASSOC)):
+                    ?>
+                    <div class="card-produto">
+                        <div class="nome-produto">
+                            <?= $obs['observacao'] ?>
+                        </div>
+                    </div>
+                <?php endwhile; ?>
+
+            </div>
+
         </div>
-    </div>
-
-    <div class="alinhar-btn">
-        <a href="Index.php" class="btn-finalizar">Finalizar</a>
     </div>
 
     </div>
@@ -229,6 +279,46 @@ if (isset($_REQUEST['Criar'])) {
         </div>
     </div>
 
+    <div class="modal fade" id="modalEditarItem">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <form method="POST">
+
+                    <div class="modal-header">
+                        <h5 class="modal-title">Editar Item</h5>
+                    </div>
+
+                    <div class="modal-body">
+
+                        <input type="hidden" name="item_id" id="item-id">
+
+                        <label>Produto</label>
+                        <input type="text" id="item-nome" class="form-control" readonly>
+
+                        <label class="mt-2">Quantidade</label>
+                        <input type="number" name="nova_qtd" id="item-qtd" class="form-control">
+
+                    </div>
+
+                    <div class="modal-footer d-flex justify-content-between">
+
+                        <button type="submit" name="ExcluirItem" class="btn btn-danger">
+                            Excluir
+                        </button>
+
+                        <button type="submit" name="EditarItem" class="btn btn-success">
+                            Salvar
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
@@ -242,8 +332,54 @@ if (isset($_REQUEST['Criar'])) {
 
             });
         });
+
+        let categoriaAtual = 'todos';
+
+        function filtrarPorCategoria(cat, btn) {
+
+            document.querySelectorAll('.btn-categoria').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            categoriaAtual = cat.toLowerCase();
+            executarFiltro();
+        }
+
+        function filtrarProdutos() {
+            executarFiltro();
+        }
+
+        function executarFiltro() {
+            let texto = document.getElementById('inputBusca').value.toLowerCase();
+            let cards = document.querySelectorAll('.container-produtos .card-produto:not(.item-comanda)');
+
+            cards.forEach(card => {
+
+                let nome = card.dataset.nome.toLowerCase();
+                let categoriaCard = card.dataset.categoria.toLowerCase();
+
+                let bateTexto = nome.includes(texto);
+                let bateCategoria = (categoriaAtual === 'todos' || categoriaCard === categoriaAtual);
+
+                if (bateTexto && bateCategoria) {
+                    card.style.display = "flex";
+                } else {
+                    card.style.display = "none";
+                }
+            });
+        }
+
+        document.querySelectorAll('.item-comanda').forEach(item => {
+            item.addEventListener('click', () => {
+
+                document.getElementById('item-id').value = item.dataset.id;
+                document.getElementById('item-nome').value = item.dataset.nome;
+                document.getElementById('item-qtd').value = item.dataset.quantidade;
+
+            });
+        });
     </script>
 </body>
+
 <?php
 if (isset($_REQUEST['AdicionarProduto'])) {
     $id = $_REQUEST['edit_id'];
@@ -255,7 +391,7 @@ if (isset($_REQUEST['AdicionarProduto'])) {
 if (isset($_REQUEST['AdicionarObservacao'])) {
     $Obs = $_REQUEST['Observacao'];
     $idComanda = $_GET['id'];
-    AdicionarObservacao($Obs,$idComanda,$conn);
+    AdicionarObservacao($Obs, $idComanda, $conn);
     $script = "<script>location.href='index.php?id=$idComanda'</script>";
     echo $script;
 }

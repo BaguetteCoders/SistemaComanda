@@ -95,9 +95,35 @@ function AdicionarProduto($idComanda, $idProduto, $quantidade, $conn)
     }
     return true;
 }
-function AdicionarObservacao($obs,$idcomanda,$conn){
+function AdicionarObservacao($obs, $idcomanda, $conn)
+{
     $sql = "INSERT INTO observacoes(id,idcomanda,observacao) Values(null,$idcomanda,'$obs')";
     $AdcObs = $conn->prepare($sql);
     $AdcObs->execute();
 }
+
+function RemoverProdutoDaComanda($comandaId, $produtoId, $conn)
+{
+    $sql = "SELECT pedidos FROM comandas WHERE id = :id";
+    $removercomanda = $conn->prepare($sql);
+    $removercomanda->bindValue(":id", $comandaId);
+    $removercomanda->execute();
+
+    $row = $removercomanda->fetch(PDO::FETCH_ASSOC);
+
+    $pedidos = explode(" ", $row['pedidos']);
+
+    $pedidos = array_filter($pedidos, function ($p) use ($produtoId) {
+        return $p != $produtoId;
+    });
+
+    $novaLista = implode(" ", $pedidos);
+
+    $sql = "UPDATE comandas SET pedidos = :pedidos WHERE id = :id";
+    $alterarpedidos = $conn->prepare($sql);
+    $alterarpedidos->bindValue(":pedidos", $novaLista);
+    $alterarpedidos->bindValue(":id", $comandaId);
+    $alterarpedidos->execute();
+}
+
 ?>

@@ -4,6 +4,35 @@ body {
     color: white;
 }
 
+.top-bar {
+    width: 100%;
+    max-width: 1200px;
+    margin: 20px auto 0;
+    padding: 0 20px;
+}
+
+.btn-voltar {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+
+    background: #2a2a2a;
+    color: white;
+    text-decoration: none;
+
+    padding: 8px 16px;
+    border-radius: 10px;
+
+    border: 1px solid #444;
+
+    transition: 0.3s;
+}
+
+.btn-voltar:hover {
+    background: #333;
+    transform: translateX(-3px);
+}
+
 h1 {
     display: flex;
     justify-content: center;
@@ -103,6 +132,7 @@ h1 {
 
 .container-produtos {
     display: flex;
+    padding: 12px;
     flex-wrap: wrap;
     gap: 15px;
 }
@@ -146,9 +176,9 @@ h1 {
 
 .busca-wrapper {
     position: relative;
-    flex-grow: 1;
-    margin: 0 30px;
+    flex: 1;
     max-width: 400px;
+    margin: 0 20px;
 }
 
 .busca-icon {
@@ -157,18 +187,18 @@ h1 {
     top: 50%;
     transform: translateY(-50%);
     color: #888;
-    pointer-events: none;
+    font-size: 0.9rem;
 }
 
 .busca-input {
-    width: 140%;
+    width: 100%;
     background: #1b1b1b;
     border: 1px solid #444;
     border-radius: 50px;
-    padding: 10px 20px 10px 50px;
+    padding: 10px 20px 10px 45px;
     color: white;
     outline: none;
-    transition: 0.3s;
+    transition: 0.25s;
     font-size: 0.9rem;
 }
 
@@ -275,6 +305,24 @@ h1 {
     border-color: #eeb12d !important;
 }
 
+.observacao-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+    justify-content: flex-end;
+}
+
+.observacao-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 400px;
+}
+
+.observacao-input {
+    width: 100%;
+}
+
 .comandas {
     margin-top: 20px;
     border-color: #1e8549 !important;
@@ -373,7 +421,7 @@ h1 {
 }
 
 .busca-input-atendente {
-    width: 150%;
+    width: 100%;
     background: #1b1b1b;
     border: 1px solid #444;
     border-radius: 50px;
@@ -412,6 +460,7 @@ h1 {
 .painel-box-atendente {
     display: flex;
     justify-content: space-around;
+    flex-direction: column;
     background: #222;
     margin: 20px;
     padding: 20px;
@@ -449,8 +498,12 @@ h1 {
     .painel-header-atendente {
         flex-direction: column;
         align-items: stretch;
-        gap: 15px;
-        padding: 15px;
+        gap: 10px;
+    }
+
+    .busca-wrapper {
+        max-width: 100%;
+        margin: 0;
     }
 
     .painel-box-atendente {
@@ -483,14 +536,6 @@ h1 {
 
     .btn-finalizar {
         margin-top: 2rem;
-    }
-
-    .busca-wrapper {
-        width: 100%;
-        max-width: 280px;
-        margin: 0 auto;
-        display: flex;
-        align-items: center;
     }
 
     .busca-input {
